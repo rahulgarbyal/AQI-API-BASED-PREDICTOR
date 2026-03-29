@@ -2,7 +2,7 @@ name: AQI Fetch Job
 
 on:
   schedule:
-    - cron: "0 */6 * * *"   # every 30 minutes
+    - cron: "0 */6 * * *"
   workflow_dispatch:
 
 jobs:
@@ -26,7 +26,7 @@ jobs:
         env:
           WAQI_KEY: ${{ secrets.WAQI_KEY }}
           MONGO_URI: ${{ secrets.MONGO_URI }}
-        run: 
+        run: |
           echo "Starting AQI job..."
           python AQI_SCHEDULER.py
           echo "Job finished"
