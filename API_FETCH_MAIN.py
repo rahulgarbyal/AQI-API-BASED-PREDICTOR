@@ -1,4 +1,5 @@
 import requests
+import os
 
 BASE_URL = "https://api.waqi.info/feed/"
 API_KEY = "3ca2567282608a5f5df1ca418243656c58d22465"
