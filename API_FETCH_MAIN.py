@@ -2,7 +2,6 @@ import requests
 
 BASE_URL = "https://api.waqi.info/feed/"
 API_KEY = "3ca2567282608a5f5df1ca418243656c58d22465"
-
 def get_aqi_info(city):
     url = f"{BASE_URL}{city}/?token={API_KEY}"
 
@@ -24,3 +23,7 @@ def get_aqi_info(city):
     except requests.exceptions.RequestException as e:
         print("Request Failed:", e)
         return None
+
+# city_name = input("City: ")
+# aqi_info = get_aqi_info(city_name)
+# print(aqi_info)
