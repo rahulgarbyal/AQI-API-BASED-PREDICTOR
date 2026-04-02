@@ -1,12 +1,18 @@
 import pandas as pd
 import joblib
+import os
 
 def load_model():
-    model = joblib.load("../Models/aqi_rf_model.pkl")
+    model_path = os.path.join("Models", "aqi_rf_model.pkl")
+    model = joblib.load(model_path)
     return model
 
 def load_data():
-    df = pd.read_csv("../DATA/processed/final_feature_dataset_aqi.csv")
+    data_path = os.path.join("DATA",
+                             "processed",
+                             "final_feature_dataset_aqi.csv"
+                             )
+    df = pd.read_csv(data_path)
 
     df['date'] = pd.to_datetime(
         df['date'],

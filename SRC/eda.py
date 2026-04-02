@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import pandas as pd
+import streamlit as st
 
 def load_data():
     df = pd.read_csv("../DATA/processed/cleaned_aqi.csv")
@@ -16,7 +17,7 @@ def aqi_distribution(df):
     plt.title("Distribution of AQI Values")
     plt.xlabel("AQI")
     plt.ylabel("Frequency")
-    plt.show()
+    st.pyplot(plt)
 
 def top_polluted_cities(df):
     top_cities = df.groupby('area')['aqi_value'].mean() \
@@ -26,7 +27,7 @@ def top_polluted_cities(df):
     top_cities.plot(kind='bar')
     plt.title("Top 10 Most Polluted Cities")
     plt.ylabel("Average AQI")
-    plt.show()
+    st.pyplot(plt)
 
 def top_clean_cities(df):
     clean_cities = df.groupby('area')['aqi_value'].mean() \
@@ -36,7 +37,7 @@ def top_clean_cities(df):
     clean_cities.plot(kind='bar')
     plt.title("Top 10 Clean Cities")
     plt.ylabel("Average AQI")
-    plt.show()
+    st.pyplot(plt)
 
 def monthly_trend(df):
     df['month'] = df['date'].dt.month
@@ -49,7 +50,7 @@ def monthly_trend(df):
     plt.xlabel("Month")
     plt.ylabel("Average AQI")
     plt.grid(True)
-    plt.show()
+    st.pyplot(plt)
 
 def yearly_trend(df):
     df['year'] = df['date'].dt.year
@@ -62,8 +63,7 @@ def yearly_trend(df):
     plt.xlabel("Year")
     plt.ylabel("Average AQI")
     plt.grid(True)
-    plt.show()
-
+    st.pyplot(plt)
 
 def city_trend(df, city_name):
     city_data = df[df['area'] == city_name]
@@ -73,4 +73,4 @@ def city_trend(df, city_name):
     plt.xlabel("Date")
     plt.ylabel("AQI")
     plt.xticks(rotation=45)
-    plt.show()
+    st.pyplot(plt)
