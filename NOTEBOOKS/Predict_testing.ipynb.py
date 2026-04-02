@@ -46,5 +46,3 @@ plt.xlabel("Date")
 plt.ylabel("AQI")
 plt.xticks(rotation=45)
 plt.show()
-
-

@@ -31,9 +31,7 @@ df['city_encoded'] = le_city.fit_transform(df['area'])
 
 le_state = LabelEncoder()
 df['state_encoded'] = le_state.fit_transform(df['state'])
-
-df.dropna()
-
+df.dropna(inplace=True)
 df.to_csv("../DATA/processed/final_feature_dataset_aqi.csv")
 
 

@@ -1,5 +1,4 @@
 import pandas as pd
-from xarray.util.generate_ops import inplace
 
 df = pd.read_csv("../DATA/raw/aqi.csv")
 df.head()
