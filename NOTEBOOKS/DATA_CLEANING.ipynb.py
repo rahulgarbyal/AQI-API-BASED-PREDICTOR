@@ -1,10 +1,12 @@
 import pandas as pd
+from xarray.util.generate_ops import inplace
+
 df = pd.read_csv("../DATA/raw/aqi.csv")
 df.head()
 df.isnull().sum()
 df = df.drop(columns=['note'])
 
-df['date'] = pd.to_datetime(df['date'],dayfirst=True)
+df['date'] = pd.to_datetime(df['date'], dayfirst=True)
 df.info()
 # print(df.duplicated().sum())
 
