@@ -20,9 +20,7 @@ def aqi_distribution(df):
     st.pyplot(plt)
 
 def top_polluted_cities(df):
-    top_cities = df.groupby('area')['aqi_value'].mean() \
-                   .sort_values(ascending=False).head(10)
-
+    top_cities = df.groupby('area')['aqi_value'].mean().sort_values(ascending=False).head(10)
     plt.figure(figsize=(10, 5))
     top_cities.plot(kind='bar')
     plt.title("Top 10 Most Polluted Cities")
@@ -30,9 +28,7 @@ def top_polluted_cities(df):
     st.pyplot(plt)
 
 def top_clean_cities(df):
-    clean_cities = df.groupby('area')['aqi_value'].mean() \
-                     .sort_values().head(10)
-
+    clean_cities = df.groupby('area')['aqi_value'].mean().sort_values().head(10)
     plt.figure(figsize=(10, 5))
     clean_cities.plot(kind='bar')
     plt.title("Top 10 Clean Cities")
@@ -41,10 +37,9 @@ def top_clean_cities(df):
 
 def monthly_trend(df):
     df['month'] = df['date'].dt.month
-
     monthly = df.groupby('month')['aqi_value'].mean()
 
-    plt.figure(figsize=(10, 5))
+    plt.figure(figsize=(10, 10))
     monthly.plot(marker='o')
     plt.title("Monthly AQI Trend")
     plt.xlabel("Month")
@@ -67,7 +62,7 @@ def yearly_trend(df):
 
 def city_trend(df, city_name):
     city_data = df[df['area'] == city_name]
-    plt.figure(figsize=(10, 5))
+    plt.figure(figsize=(5, 4))
     plt.plot(city_data['date'], city_data['aqi_value'])
     plt.title(f"{city_name} Historical AQI Trend")
     plt.xlabel("Date")

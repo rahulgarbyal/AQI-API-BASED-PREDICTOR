@@ -1,6 +1,8 @@
 import pandas as pd
 import joblib
 import os
+import numpy as np
+from datetime import timedelta
 
 def load_model():
     model_path = os.path.join("Models", "aqi_rf_model.pkl")
@@ -27,51 +29,105 @@ def get_city_data(df, city_name):
     return city_data
 
 def predict_latest_aqi(model, city_data):
-    sample = city_data.iloc[-1]
+    history = list(city_data['aqi_value'].values)
 
-    features = [
-        'lag_1',
-        'lag_7',
-        'lag_30',
-        'rolling_7',
-        'rolling_30',
-        'month',
-        'day',
-        'day_of_week',
-        'year',
-        'city_encoded',
-        'state_encoded'
-    ]
+    dataset_latest_date = city_data["date"].max()
+    today = pd.Timestamp.today()
 
-    X_sample = pd.DataFrame(
-        [sample[features].values],
-        columns=features
-    )
+    current_date = dataset_latest_date
 
-    prediction = model.predict(X_sample)
+    while current_date < today:
+        next_date = current_date + timedelta(days=1)
 
-    return prediction[0], sample['aqi_value']
+        X_future = pd.DataFrame({
+            "lag_1": [history[-1]],
+            "lag_7": [history[-7]],
+            "lag_30": [history[-30]],
+            "rolling_7": [np.mean(history[-7:])],
+            "rolling_30": [np.mean(history[-30:])],
+            "month": [next_date.month],
+            "day": [next_date.day],
+            "day_of_week": [next_date.weekday()],
+            "year": [next_date.year],
+            "city_encoded": [city_data['city_encoded'].iloc[-1]],
+            "state_encoded": [city_data['state_encoded'].iloc[-1]]
+        })
+        pred = model.predict(X_future)[0]
 
-def predict_recent(model, city_data):
-    features = [
-        'lag_1',
-        'lag_7',
-        'lag_30',
-        'rolling_7',
-        'rolling_30',
-        'month',
-        'day',
-        'day_of_week',
-        'year',
-        'city_encoded',
-        'state_encoded'
-    ]
+        history.append(pred)
+        current_date = next_date
 
-    recent = city_data.tail(20)
+    tomorrow = today + timedelta(days=1)
 
-    X_recent = recent[features]
-    y_actual = recent['aqi_value']
+    X_tomorrow = pd.DataFrame({
+        "lag_1": [history[-1]],
+        "lag_7": [history[-7]],
+        "lag_30": [history[-30]],
+        "rolling_7": [np.mean(history[-7:])],
+        "rolling_30": [np.mean(history[-30:])],
+        "month": [tomorrow.month],
+        "day": [tomorrow.day],
+        "day_of_week": [tomorrow.weekday()],
+        "year": [tomorrow.year],
+        "city_encoded": [city_data['city_encoded'].iloc[-1]],
+        "state_encoded": [city_data['state_encoded'].iloc[-1]]
+    })
+    tomorrow_pred = model.predict(X_tomorrow)[0]
 
-    y_pred = model.predict(X_recent)
+    return round(tomorrow_pred,2)
 
-    return recent, y_actual, y_pred
+def predict_recent(model, city_data, days=7):
+    history = list(city_data['aqi_value'].values)
+    dataset_latest_date = city_data["date"].max()
+    print(dataset_latest_date)
+    today = pd.Timestamp.today()
+
+    current_date = dataset_latest_date
+
+    while current_date < today:
+        next_date = current_date + timedelta(days=1)
+        X_future = pd.DataFrame({
+            "lag_1": [history[-1]],
+            "lag_7": [history[-7]],
+            "lag_30": [history[-30]],
+            "rolling_7": [np.mean(history[-7:])],
+            "rolling_30": [np.mean(history[-30:])],
+            "month": [next_date.month],
+            "day": [next_date.day],
+            "day_of_week": [next_date.weekday()],
+            "year": [next_date.year],
+            "city_encoded": [city_data['city_encoded'].iloc[-1]],
+            "state_encoded": [city_data['state_encoded'].iloc[-1]]
+        })
+        pred = model.predict(X_future)[0]
+        history.append(pred)
+
+        current_date = next_date
+
+    predictions = []
+    for i in range(days):
+        future_date = today + timedelta(days=i+1)
+        X_future_7 = pd.DataFrame({
+            "lag_1": [history[-1]],
+            "lag_7": [history[-7]],
+            "lag_30": [history[-30]],
+            "rolling_7": [np.mean(history[-7:])],
+            "rolling_30": [np.mean(history[-30:])],
+            "month": [future_date.month],
+            "day": [future_date.day],
+            "day_of_week": [future_date.weekday()],
+            "year": [future_date.year],
+            "city_encoded": [city_data['city_encoded'].iloc[-1]],
+            "state_encoded": [city_data['state_encoded'].iloc[-1]]
+        })
+
+        next_7_pred = model.predict(X_future_7)[0]
+
+        predictions.append({
+            "date": future_date,
+            "predicted_aqi": round(next_7_pred,2)
+        })
+        history.append(next_7_pred)
+
+    return pd.DataFrame(predictions)
+

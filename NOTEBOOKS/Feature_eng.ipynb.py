@@ -16,7 +16,6 @@ df['lag_7'] = df.groupby('area')['aqi_value'].shift(7)
 df['lag_30'] = df.groupby('area')['aqi_value'].shift(30)
 
 #rolling avgs
-
 df['rolling_7'] = df.groupby('area')['aqi_value'].transform(lambda x: x.rolling(7).mean())
 df['rolling_30'] = df.groupby('area')['aqi_value'].transform(lambda x: x.rolling(30).mean())
 
@@ -31,6 +30,7 @@ df['city_encoded'] = le_city.fit_transform(df['area'])
 
 le_state = LabelEncoder()
 df['state_encoded'] = le_state.fit_transform(df['state'])
+
 df.dropna(inplace=True)
 df.to_csv("../DATA/processed/final_feature_dataset_aqi.csv")
 

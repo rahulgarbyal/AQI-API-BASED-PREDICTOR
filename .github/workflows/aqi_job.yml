@@ -28,5 +28,5 @@ jobs:
           MONGO_URI: ${{ secrets.MONGO_URI }}
         run: |
           echo "Starting AQI job..."
-          python AQI_SCHEDULER.py
+          python FutureINNovative/AQI_SCHEDULER.py
           echo "Job finished"

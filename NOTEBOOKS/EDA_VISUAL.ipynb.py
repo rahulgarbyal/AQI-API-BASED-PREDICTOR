@@ -39,7 +39,7 @@ plt.title("State-Wise Average AQI")
 plt.ylabel("Average AQI")
 plt.show()
 
-
+#monthly trend
 df['date'] = pd.to_datetime(df['date'])
 df['month'] = df['date'].dt.month
 
